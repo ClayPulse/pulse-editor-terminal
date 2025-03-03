@@ -1,0 +1,7 @@
+.xterm .xterm-viewport {
+  scrollbar-width: none;
+}
+
+.xterm-viewport::-webkit-scrollbar {
+  width: 0px;
+}
