@@ -66,7 +66,7 @@ const previewConfig: WebpackConfig & DevServerConfig = {
     ],
   },
   devServer: {
-    port: 3000,
+    port: 3200,
     hot: true, // Enable Hot Module Replacement
   },
   mode: "development",

@@ -12,7 +12,12 @@ const config: ExtensionConfig = {
   displayName: packageJson.displayName,
   description: packageJson.description,
   version: packageJson.version,
-  extensionType: ExtensionTypeEnum.TerminalView,
+  extensionType: ExtensionTypeEnum.ConsoleView,
+  enabledPlatforms: {
+    "web": true,
+    "mobile": false,
+    "desktop": true,
+  }
 };
 
 export default config;
