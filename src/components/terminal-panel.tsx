@@ -12,19 +12,12 @@ import config from "../../pulse.config";
 
 export default function TerminalPanel() {
   const terminalDivRef = useRef<HTMLDivElement>(null);
-  const [terminalUrl, setTerminalUrl] = React.useState("");
+  const { websocketUrl } = useTerminal(config.id);
 
-  const { socketUrl } = useTerminal(config.id);
-
-
+  // Handle WebSocket connection
   useEffect(() => {
-    if (socketUrl) {
-      setTerminalUrl(socketUrl);
-    }
-  }, [socketUrl]);
-
-  useEffect(() => {
-    if (terminalUrl) {
+    console.log("WebSocket URL: ", websocketUrl);
+    if (websocketUrl) {
       const terminal = new Terminal({
         theme: {},
         rows: 0,
@@ -32,36 +25,21 @@ export default function TerminalPanel() {
       // Fit addon
       const fitAddon = new FitAddon();
       terminal.loadAddon(fitAddon);
-  
-      // Attach addon
-      const webSocket = new WebSocket(terminalUrl);
-      webSocket.onopen = () => {
-        console.log("WebSocket connection established.");
-      };
-      webSocket.onmessage = (event) => {
-        console.log(event);
-      };
-      webSocket.onerror = (error) => {
-        console.error("WebSocket error: ", error);
-      };
-  
-      const attachAddon = new AttachAddon(webSocket, {
-        bidirectional: true,
-      });
-      terminal.loadAddon(attachAddon);
-  
+
+      addWSAttachAddon(terminal, websocketUrl);
+
       // Open terminal
       terminal.open(terminalDivRef.current as HTMLDivElement);
       fitAddon.fit();
-  
+
       // Print welcome message
       terminal.write("Welcome to Pulse Terminal!\r\n");
-  
+
       // Re-fit terminal on window resize
       window.addEventListener("resize", () => {
         fitAddon.fit();
       });
-  
+
       return () => {
         terminal.dispose();
         window.removeEventListener("resize", () => {
@@ -69,8 +47,29 @@ export default function TerminalPanel() {
         });
       };
     }
+  }, [websocketUrl]);
 
-  }, [terminalUrl]);
+  function addWSAttachAddon(terminal: Terminal, websocketUrl: string) {
+    if (!websocketUrl) {
+      throw new Error("No WebSocket URL provided.");
+    }
+    // Attach addon
+    const webSocket = new WebSocket(websocketUrl);
+    webSocket.onopen = () => {
+      console.log("WebSocket connection established.");
+    };
+    webSocket.onmessage = (event) => {
+      console.log(event);
+    };
+    webSocket.onerror = (error) => {
+      console.error("WebSocket error: ", error);
+    };
+
+    const attachAddon = new AttachAddon(webSocket, {
+      bidirectional: true,
+    });
+    terminal.loadAddon(attachAddon);
+  }
 
   return (
     <div

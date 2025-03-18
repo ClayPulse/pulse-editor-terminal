@@ -5,49 +5,35 @@ Pulse Editor Terminal is a Pulse Editor terminal extension that allows you to co
 ### Connect to your device's terminal
 #### Desktop
 Desktop shell should be automatically connected when you open Pulse Editor on desktop. 
-#### Android: Connection via Termux sshd
+#### Android: Setup node-pty in Termux
+You have to setup terminal server on your Android device manually, and start it every time you'd need to use this terminal extension on Android. 
 1. Install Termux, following guide on [Termux's GitHub repo](https://github.com/termux/termux-app). If you prefer a more linux-like interaction using your preferred distro in Termux, you can try out [Androidnix](https://andronix.app/).
-2. Install openssh.
-    ```bash
-    # Update latest package mirrors,
-    # or use 'apt update'.
-    pkg update
-    # Install openssh
-    pkg install openssh
-    ```
-3. Start openssh server.
-    ```bash
-    sshd
-    ```
-4. Find out and note down username and your phone's IP.
+2. Install nodejs 22 in Termux.
+```
+apt update
+apt install nodejs-lts
+```
+1. Clone this [minimal node-pty server repo](https://github.com/ClayPulse/termux-node-pty) used to generate terminal websocket using node-pty.
+```bash
+git clone https://github.com/ClayPulse/termux-node-pty
+cd termux-node-pty
+```
+2. Install dependencies
+```bash
+# Install build tools to build native module
+apt install -y make python build-essential
 
-    To get username:
-    ```bash
-    whoami
-    ```
-    To set user password:
-    ```bash
-    passwd
-    ```
-    Or if you prefer using public key authentication, follow [Termux's Wiki on Remote Access](https://wiki.termux.com/wiki/Remote_Access#Using_the_SSH_server)
-5. (WIP) Fill username and optionally credential information in Pulse Editor settings. 
-6. (Optional -- for development) Connect from remote terminal **on your PC** via ADB.
-    > Make sure you have enabled developer options on your Android device, and opened "USB debugging" for USB connection or "Wireless debugging" for wireless connection.
+# Set android_ndk_path placeholder to avoid build error when installing node-pty
+export GYP_DEFINES="android_ndk_path=''"
 
-    First, get your phone's IP (you might need to run `pkg install net-tools` to install ifconfig):
-    ```bash
-    ifconfig
-    ```
+npm i
+```
+5. Start node-pty server
+```
+node node-pty-server.js
+```
 
-    There are many ways to pair your Android device via ADB. 
-    - For more user friendly UI based connection, try out Android Studio.
-    - For CLI connection, use `adb pair HOST[:PORT] [PAIRING CODE]`. 
-
-    Once you have paired your device using ADB, you can now connect to Termux from your PC.
-    ```bash
-    # Connect to Termux
-    ssh -p 8022 username_from_step4@IP_of_your_phone_from_step4
-    ```
+6. Fill websocket URL produced by proxy server in Pulse Editor settings. It should be `ws://localhost:6060` by default.
 
 ### Start development
 #### Method 1: Install your extension in Pulse Editor as a dev extension
