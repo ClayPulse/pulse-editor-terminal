@@ -3,25 +3,7 @@ import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import pulseConfig from "./pulse.config";
 import { Configuration as WebpackConfig } from "webpack";
 import { Configuration as DevServerConfig } from "webpack-dev-server";
-import { networkInterfaces } from "os";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-
-function getLocalNetworkIP() {
-  const interfaces = networkInterfaces();
-  for (const iface of Object.values(interfaces)) {
-    if (!iface) continue;
-    for (const config of iface) {
-      if (config.family === "IPv4" && !config.internal) {
-        return config.address; // Returns the first non-internal IPv4 address
-      }
-    }
-  }
-  return "localhost"; // Fallback
-}
-
-const origin = getLocalNetworkIP();
-
-const modulePath = `http://${origin}:3001/${pulseConfig.id}/${pulseConfig.version}/`;
 
 const previewConfig: WebpackConfig & DevServerConfig = {
   entry: {
@@ -66,7 +48,7 @@ const previewConfig: WebpackConfig & DevServerConfig = {
     ],
   },
   devServer: {
-    port: 3200,
+    port: 3030,
     hot: true, // Enable Hot Module Replacement
   },
   mode: "development",
@@ -93,14 +75,14 @@ const mfConfig: WebpackConfig & DevServerConfig = {
       },
       shared: {
         react: {
-          requiredVersion: "19.0.0-rc-65e06cb7-20241218",
+          requiredVersion: "19.1.0",
           import: "react", // the "react" package will be used a provided and fallback module
           shareKey: "react", // under this name the shared module will be placed in the share scope
           shareScope: "default", // share scope with this name will be used
           singleton: true, // only a single version of the shared module is allowed
         },
         "react-dom": {
-          requiredVersion: "19.0.0-rc-65e06cb7-20241218",
+          requiredVersion: "19.1.0",
           singleton: true, // only a single version of the shared module is allowed
         },
         // Share Workbox configuration as a module
@@ -109,7 +91,6 @@ const mfConfig: WebpackConfig & DevServerConfig = {
           requiredVersion: "^7.3.0",
         },
       },
-      getPublicPath: `function() {return "${modulePath}"}`,
     }),
   ],
   module: {
