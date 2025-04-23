@@ -28,12 +28,13 @@ export GYP_DEFINES="android_ndk_path=''"
 
 npm i
 ```
-5. Start node-pty server
+
+3. Start node-pty server
 ```
 node node-pty-server.js
 ```
 
-6. Fill websocket URL produced by proxy server in Pulse Editor settings. It should be `ws://localhost:6060` by default.
+4. Fill websocket URL produced by proxy server in Pulse Editor settings. It should be `ws://localhost:6060` by default.
 
 ### Start development
 #### Method 1: Install your extension in Pulse Editor as a dev extension
@@ -41,7 +42,7 @@ Run the following to start a dev server locally.
 ```
 npm run dev
 ```
-This will host your extension at http://localhost:3001 (or you can customize the server host in `webpack.config.ts`). Then in Pulse Editor, go to settings and fill in your extension dev server's information to install you new extension. You will need the following
+This will host your extension at http://localhost:3001 (or you can customize the server host in `webpack.config.ts`). Then in Pulse Editor, go to settings and fill in your extension dev server's information to install you new extension. You will need the following:
 - dev server: e.g. http://localhost:3001
 - extension id: your extension's ID specified in `pulse.config.ts` 
 - version: your extension's version specified in `pulse.config.ts`
