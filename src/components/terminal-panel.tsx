@@ -54,6 +54,7 @@ export default function TerminalPanel() {
       throw new Error("No WebSocket URL provided.");
     }
     // Attach addon
+    console.log("Protocol: ", window.location.protocol);
     const webSocket = new WebSocket(websocketUrl);
     webSocket.onopen = () => {
       console.log("WebSocket connection established.");

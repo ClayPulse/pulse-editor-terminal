@@ -1,7 +1,7 @@
 {
-  "name": "pulse_editor_extension_template",
-  "displayName": "Pulse Extension Template",
-  "description": "A template for creating Pulse extensions",
+  "name": "pulse_editor_terminal",
+  "displayName": "Pulse Editor Terminal",
+  "description": "Pulse Editor Terminal",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -12,9 +12,12 @@
     "preview": "cross-env NODE_OPTIONS='--import=tsx' PREVIEW=true webpack serve --mode development"
   },
   "dependencies": {
-    "@module-federation/enhanced": "^0.12.0",
+    "@module-federation/enhanced": "^0.13.0",
     "@pulse-editor/react-api": "file:../pulse-editor/npm-packages/react-api",
     "@pulse-editor/types": "file:../pulse-editor/npm-packages/types",
+    "@xterm/addon-attach": "^0.11.0",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "html-webpack-plugin": "^5.6.3",
@@ -27,7 +30,7 @@
     "@types/react-dom": "^19.1.2",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
-    "eslint": "^9.25.0",
+    "eslint": "^9.25.1",
     "eslint-plugin-react": "^7.37.5",
     "mini-css-extract-plugin": "^2.9.2",
     "postcss": "^8.5.3",
@@ -38,7 +41,7 @@
     "ts-loader": "^9.5.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.30.1",
+    "typescript-eslint": "^8.31.0",
     "webpack": "^5.99.6",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.1"
