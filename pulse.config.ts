@@ -12,12 +12,8 @@ const config: ExtensionConfig = {
   displayName: packageJson.displayName,
   description: packageJson.description,
   version: packageJson.version,
-  extensionType: ExtensionTypeEnum.ConsoleView,
-  enabledPlatforms: {
-    "web": true,
-    "mobile": false,
-    "desktop": true,
-  }
+  extensionType: ExtensionTypeEnum.FileView,
+  fileTypes: ["txt", "json", "py", "cpp", "c", "tsx", "ts", "js", "jsx"],
 };
 
 export default config;
