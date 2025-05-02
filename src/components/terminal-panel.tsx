@@ -8,11 +8,10 @@ import "../styles/xterm-style-override.css";
 import { FitAddon } from "@xterm/addon-fit";
 import { AttachAddon } from "@xterm/addon-attach";
 import { useTerminal } from "@pulse-editor/react-api";
-import config from "../../pulse.config";
 
 export default function TerminalPanel() {
   const terminalDivRef = useRef<HTMLDivElement>(null);
-  const { websocketUrl } = useTerminal(config.id);
+  const { websocketUrl } = useTerminal();
 
   // Handle WebSocket connection
   useEffect(() => {
