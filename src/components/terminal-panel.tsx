@@ -12,6 +12,7 @@ import { useTerminal } from "@pulse-editor/react-api";
 export default function TerminalPanel() {
   const terminalDivRef = useRef<HTMLDivElement>(null);
   const { websocketUrl } = useTerminal();
+  const terminalRef = useRef<Terminal>(null);
 
   // Handle WebSocket connection
   useEffect(() => {
@@ -20,7 +21,10 @@ export default function TerminalPanel() {
       const terminal = new Terminal({
         theme: {},
         rows: 0,
+        fontFamily: "monospace",
       });
+      terminalRef.current = terminal;
+
       // Fit addon
       const fitAddon = new FitAddon();
       terminal.loadAddon(fitAddon);
@@ -72,9 +76,12 @@ export default function TerminalPanel() {
 
   return (
     <div
-      className="h-full overflow-hidden bg-black"
+      className="h-full overflow-hidden bg-black pt-0.5 px-1"
       id="terminal"
       ref={terminalDivRef}
+      onClick={() => {
+        terminalRef.current?.focus();
+      }}
     ></div>
   );
 }

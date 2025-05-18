@@ -1,5 +1,23 @@
 # pulse_editor_terminal
 
+## 0.0.6
+
+### Patch Changes
+
+- Update styles
+
+## 0.0.5
+
+### Patch Changes
+
+- Remove tailwindCSS preflight and change UI
+
+## 0.0.4
+
+### Patch Changes
+
+- Fix tailwindCSS preflight styles & add commands
+
 ## 0.0.3
 
 ### Patch Changes
