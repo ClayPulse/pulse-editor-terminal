@@ -11,7 +11,7 @@ import { useTerminal } from "@pulse-editor/react-api";
 
 export default function TerminalPanel() {
   const terminalDivRef = useRef<HTMLDivElement>(null);
-  const { websocketUrl } = useTerminal();
+  const { websocketUrl, projectHomePath } = useTerminal();
   const terminalRef = useRef<Terminal>(null);
 
   // Handle WebSocket connection
@@ -35,9 +35,6 @@ export default function TerminalPanel() {
       terminal.open(terminalDivRef.current as HTMLDivElement);
       fitAddon.fit();
 
-      // Print welcome message
-      terminal.write("Welcome to Pulse Terminal!\r\n");
-
       // Re-fit terminal on window resize
       window.addEventListener("resize", () => {
         fitAddon.fit();
@@ -50,7 +47,7 @@ export default function TerminalPanel() {
         });
       };
     }
-  }, [websocketUrl]);
+  }, [websocketUrl, projectHomePath]);
 
   function addWSAttachAddon(terminal: Terminal, websocketUrl: string) {
     if (!websocketUrl) {
@@ -60,6 +57,9 @@ export default function TerminalPanel() {
     const webSocket = new WebSocket(websocketUrl);
     webSocket.onopen = () => {
       console.log("WebSocket connection established.");
+      // Cd to project home path and then clear the terminal
+      webSocket.send(`cd ${projectHomePath}\r`);
+      webSocket.send("clear\r");
     };
     webSocket.onmessage = (event) => {
       console.log(event);

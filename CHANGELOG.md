@@ -1,5 +1,11 @@
 # pulse_editor_terminal
 
+## 0.0.7
+
+### Patch Changes
+
+- CD to project home path upon loading
+
 ## 0.0.6
 
 ### Patch Changes
