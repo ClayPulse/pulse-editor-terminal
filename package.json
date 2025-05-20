@@ -2,7 +2,7 @@
   "name": "pulse_editor_terminal",
   "displayName": "Pulse Editor Terminal",
   "description": "Pulse Editor Terminal",
-  "version": "0.0.7",
+  "version": "0.0.10",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@module-federation/enhanced": "^0.13.1",
-    "@pulse-editor/react-api": "^0.1.1-alpha.12",
-    "@pulse-editor/shared-utils": "^0.1.1-alpha.12",
+    "@pulse-editor/react-api": "^0.1.1-alpha.16",
+    "@pulse-editor/shared-utils": "^0.1.1-alpha.16",
     "@xterm/addon-attach": "^0.11.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",

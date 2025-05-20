@@ -7,12 +7,18 @@ import "../styles/xterm-style-override.css";
 
 import { FitAddon } from "@xterm/addon-fit";
 import { AttachAddon } from "@xterm/addon-attach";
-import { useTerminal } from "@pulse-editor/react-api";
+import { useAgents, useExtCommand, useTerminal } from "@pulse-editor/react-api";
+import { terminalAgentCommandInfo } from "../lib/commands";
 
 export default function TerminalPanel() {
   const terminalDivRef = useRef<HTMLDivElement>(null);
-  const { websocketUrl, projectHomePath } = useTerminal();
   const terminalRef = useRef<Terminal>(null);
+  const { websocketUrl, projectHomePath } = useTerminal();
+  const websocketRef = useRef<WebSocket | null>(null);
+
+  const { updateHandler } = useExtCommand(terminalAgentCommandInfo);
+
+  const { runAgentMethod } = useAgents();
 
   // Handle WebSocket connection
   useEffect(() => {
@@ -40,6 +46,9 @@ export default function TerminalPanel() {
         fitAddon.fit();
       });
 
+      // Update command handlers
+      updateHandler(handleWriteCommand);
+
       return () => {
         terminal.dispose();
         window.removeEventListener("resize", () => {
@@ -55,11 +64,11 @@ export default function TerminalPanel() {
     }
     // Attach addon
     const webSocket = new WebSocket(websocketUrl);
+    websocketRef.current = webSocket;
     webSocket.onopen = () => {
       console.log("WebSocket connection established.");
       // Cd to project home path and then clear the terminal
-      webSocket.send(`cd ${projectHomePath}\r`);
-      webSocket.send("clear\r");
+      webSocket.send(`cd ${projectHomePath} && clear\r`);
     };
     webSocket.onmessage = (event) => {
       console.log(event);
@@ -72,6 +81,25 @@ export default function TerminalPanel() {
       bidirectional: true,
     });
     terminal.loadAddon(attachAddon);
+  }
+
+  async function handleWriteCommand({ userMessage }: { userMessage: string }) {
+    const { script }: { script: string } = await runAgentMethod(
+      "terminal-agent",
+      "executeCommand",
+      {
+        userMessage,
+      }
+    );
+
+    if (websocketRef.current) {
+      websocketRef.current.send(script + "\r");
+    } else {
+      console.error("Terminal not initialized");
+      return "failed";
+    }
+
+    return "success";
   }
 
   return (

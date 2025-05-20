@@ -1,5 +1,29 @@
 # pulse_editor_terminal
 
+## 0.0.10
+
+### Patch Changes
+
+- Fix bugs
+
+## 0.0.10
+
+### Patch Changes
+
+- Fix bugs
+
+## 0.0.9
+
+### Patch Changes
+
+- Update packages
+
+## 0.0.8
+
+### Patch Changes
+
+- Add command handler
+
 ## 0.0.7
 
 ### Patch Changes
