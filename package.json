@@ -2,7 +2,7 @@
   "name": "pulse_editor_terminal",
   "displayName": "Pulse Editor Terminal",
   "description": "Pulse Editor Terminal",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "private": true,
   "type": "module",
   "scripts": {

@@ -28,7 +28,7 @@ User: {userMessage}
           name: "script",
           type: "string",
           description:
-            "The shell script that the user can execute in the terminal.",
+            "The shell script that the user can execute in the terminal. ",
         },
       },
     },

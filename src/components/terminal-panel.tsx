@@ -93,7 +93,12 @@ export default function TerminalPanel() {
     );
 
     if (websocketRef.current) {
-      websocketRef.current.send(script + "\r");
+      // script might contain multiple lines
+      // split by new line and send each line separately
+      const socket = websocketRef.current;
+      script.split("\n").forEach((line) => {
+        socket.send(line + "\r");
+      });
     } else {
       console.error("Terminal not initialized");
       return "failed";

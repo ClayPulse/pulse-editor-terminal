@@ -1,5 +1,11 @@
 # pulse_editor_terminal
 
+## 0.0.11
+
+### Patch Changes
+
+- Allow multi-line command execution
+
 ## 0.0.10
 
 ### Patch Changes
