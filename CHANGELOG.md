@@ -1,5 +1,11 @@
 # pulse_editor_terminal
 
+## 0.0.13
+
+### Patch Changes
+
+- Update packages
+
 ## 0.0.12
 
 ### Patch Changes
