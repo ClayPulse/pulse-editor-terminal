@@ -1,7 +1,5 @@
 import { ExtensionConfig, ExtensionTypeEnum } from "@pulse-editor/shared-utils";
 import packageJson from "./package.json" with { type: "json" };
-import { terminalAgent } from "./src/lib/agent/terminal-agent";
-import { terminalAgentCommandInfo } from "./src/lib/commands";
 
 /**
  * Pulse Editor Extension Config
@@ -14,14 +12,8 @@ const config: ExtensionConfig = {
   displayName: packageJson.displayName,
   description: packageJson.description,
   version: packageJson.version,
-  extensionType: ExtensionTypeEnum.ConsoleView,
-  enabledPlatforms: {
-    "web": true,
-    "mobile": true,
-    "desktop": true,
-  },
-  agents: [terminalAgent],
-  commandsInfoList: [terminalAgentCommandInfo]
+  extensionType: ExtensionTypeEnum.FileView,
+  fileTypes: ["txt", "json", "py", "cpp", "c", "tsx", "ts", "js", "jsx"],
 };
 
 export default config;
