@@ -1,5 +1,17 @@
 # pulse_editor_terminal
 
+## 0.0.15
+
+### Patch Changes
+
+- Hotfix terminal loading state time
+
+## 0.0.14
+
+### Patch Changes
+
+- Hotfix loading issue
+
 ## 0.0.13
 
 ### Patch Changes

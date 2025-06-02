@@ -7,7 +7,12 @@ import "../styles/xterm-style-override.css";
 
 import { FitAddon } from "@xterm/addon-fit";
 import { AttachAddon } from "@xterm/addon-attach";
-import { useAgents, useExtCommand, useTerminal } from "@pulse-editor/react-api";
+import {
+  useAgents,
+  useExtCommand,
+  useLoading,
+  useTerminal,
+} from "@pulse-editor/react-api";
 import { terminalAgentCommandInfo } from "../lib/commands";
 
 export default function TerminalPanel() {
@@ -19,6 +24,8 @@ export default function TerminalPanel() {
   const { updateHandler } = useExtCommand(terminalAgentCommandInfo);
 
   const { runAgentMethod } = useAgents();
+
+  const { toggleLoading, isReady } = useLoading();
 
   // Handle WebSocket connection
   useEffect(() => {
@@ -48,6 +55,12 @@ export default function TerminalPanel() {
 
       // Update command handlers
       updateHandler(handleWriteCommand);
+
+      useEffect(() => {
+        if (isReady) {
+          toggleLoading(false);
+        }
+      }, [isReady]);
 
       return () => {
         terminal.dispose();
