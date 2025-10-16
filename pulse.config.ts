@@ -15,9 +15,9 @@ const config: AppConfig = {
   displayName: packageJson.displayName,
   description: packageJson.description,
   appType: AppTypeEnum.FileView,
-  visibility: packageJson["pulse-editor-marketplace"].visibility,
-  recommendedHeight: 640,
-  recommendedWidth: 360,
+  visibility: "public",
+  recommendedHeight: 360,
+  recommendedWidth: 640,
   thumbnail: "assets/thumbnail.png",
   preRegisteredActions: Object.values(preRegisteredActions),
 };

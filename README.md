@@ -1,8 +1,5 @@
-## Pulse App Template
-
-This is a React full-stack template which you can use to make your own Pulse Editor app. It uses Webpack Module Federation to share modules with Pulse Editor.
-
-For more information about Pulse Editor core and its ecosystem, visit our official [website](https://pulse-editor.com) and [documentation](https://docs.pulse-editor.com).
+## Pulse Editor Terminal
+Pulse Editor Terminal is a Pulse Editor terminal extension that allows you to connect to a terminal (e.g. shell, PowerShell, Termux) on your local device.
 
 ## Get Started
 

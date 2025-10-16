@@ -285,7 +285,7 @@ const mfClientConfig: WebpackConfig & DevServerConfig = {
             loader: "postcss-loader",
           },
         ],
-        exclude: [/node_modules/, /dist/],
+        exclude: [/dist/],
       },
     ],
   },
