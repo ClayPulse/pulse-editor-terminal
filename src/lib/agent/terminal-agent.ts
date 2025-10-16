@@ -12,7 +12,6 @@ export const terminalAgent: Agent = {
       name: "executeCommand",
       parameters: {
         userMessage: {
-          name: "userMessage",
           type: "string",
           description:
             "The user's message that includes intent to execute a command",
@@ -25,7 +24,6 @@ User: {userMessage}
 `,
       returns: {
         script: {
-          name: "script",
           type: "string",
           description:
             "The shell script that the user can execute in the terminal. ",

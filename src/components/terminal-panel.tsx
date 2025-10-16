@@ -9,11 +9,11 @@ import { FitAddon } from "@xterm/addon-fit";
 import { AttachAddon } from "@xterm/addon-attach";
 import {
   useAgents,
-  useExtCommand,
+  useRegisterAction,
   useLoading,
   useTerminal,
 } from "@pulse-editor/react-api";
-import { terminalAgentCommandInfo } from "../lib/commands";
+import { preRegisteredActions } from "../../pregistered-actions";
 
 export default function TerminalPanel() {
   const terminalDivRef = useRef<HTMLDivElement>(null);
@@ -21,7 +21,11 @@ export default function TerminalPanel() {
   const { websocketUrl, projectHomePath } = useTerminal();
   const websocketRef = useRef<WebSocket | null>(null);
 
-  const { updateHandler } = useExtCommand(terminalAgentCommandInfo);
+  useRegisterAction(
+    preRegisteredActions["execute-command"],
+    handleWriteCommand,
+    []
+  );
 
   const { runAgentMethod } = useAgents();
 
@@ -52,9 +56,6 @@ export default function TerminalPanel() {
       window.addEventListener("resize", () => {
         fitAddon.fit();
       });
-
-      // Update command handlers
-      updateHandler(handleWriteCommand);
 
       useEffect(() => {
         if (isReady) {

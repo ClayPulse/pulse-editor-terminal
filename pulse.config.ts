@@ -1,27 +1,25 @@
-import { ExtensionConfig, ExtensionTypeEnum } from "@pulse-editor/shared-utils";
+import { AppConfig, AppTypeEnum } from "@pulse-editor/shared-utils";
 import packageJson from "./package.json" with { type: "json" };
-import { terminalAgent } from "./src/lib/agent/terminal-agent";
-import { terminalAgentCommandInfo } from "./src/lib/commands";
+import { preRegisteredActions } from "./pregistered-actions";
 
 /**
  * Pulse Editor Extension Config
  *
  */
-const config: ExtensionConfig = {
+const config: AppConfig = {
   // Do not use hyphen character '-' in the id. 
   // The id should be the same as the package name in package.json.
   id: packageJson.name,
+  version: packageJson.version,
+  libVersion: packageJson.dependencies["@pulse-editor/shared-utils"],
   displayName: packageJson.displayName,
   description: packageJson.description,
-  version: packageJson.version,
-  extensionType: ExtensionTypeEnum.ConsoleView,
-  enabledPlatforms: {
-    "web": true,
-    "mobile": true,
-    "desktop": true,
-  },
-  agents: [terminalAgent],
-  commandsInfoList: [terminalAgentCommandInfo]
+  appType: AppTypeEnum.FileView,
+  visibility: "public",
+  recommendedHeight: 360,
+  recommendedWidth: 640,
+  thumbnail: "assets/thumbnail.png",
+  preRegisteredActions: Object.values(preRegisteredActions),
 };
 
 export default config;
