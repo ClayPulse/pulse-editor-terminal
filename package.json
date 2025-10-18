@@ -1,8 +1,8 @@
 {
-  "name": "pulse_app_template",
-  "displayName": "Pulse App Template",
-  "description": "A template for creating Pulse App",
-  "version": "0.0.1",
+  "name": "pulse_editor_terminal",
+  "displayName": "Pulse Editor Terminal",
+  "description": "Pulse Editor Terminal",
+  "version": "0.0.20",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,9 +16,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@pulse-editor/react-api": "0.1.1-alpha.49",
-    "@pulse-editor/shared-utils": "0.1.1-alpha.49",
-    "@xterm/addon-attach": "^0.12.0-beta.129",
+    "@pulse-editor/react-api": "^0.1.1-beta.55",
+    "@pulse-editor/shared-utils": "^0.1.1-beta.55",
     "@xterm/addon-fit": "^0.11.0-beta.129",
     "@xterm/xterm": "^5.6.0-beta.129",
     "cors": "^2.8.5",

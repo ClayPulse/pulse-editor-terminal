@@ -1,9 +1,10 @@
 import { Action } from "@pulse-editor/shared-utils";
 
 export const preRegisteredActions: Record<string, Action> = {
-  "execute-command": {
-    name: "Execute Command",
-    description: "Execute a command in the terminal",
+  "terminal-agent": {
+    name: "Chat with Terminal Agent",
+    description:
+      "Engage in a conversation with the terminal agent to execute commands and retrieve outputs from the terminal environment.",
     parameters: {
       userMessage: {
         type: "string",
@@ -15,6 +16,23 @@ export const preRegisteredActions: Record<string, Action> = {
       response: {
         type: "string",
         description: "The result of the command execution.",
+      },
+    },
+  },
+
+  "execute-command": {
+    name: "Execute Command in Terminal",
+    description: "Execute a command in the terminal environment.",
+    parameters: {
+      command: {
+        type: "string",
+        description: "The command to be executed in the terminal.",
+      },
+    },
+    returns: {
+      response: {
+        type: "string",
+        description: "The output from the executed command.",
       },
     },
   },
