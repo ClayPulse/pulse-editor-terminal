@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import { Terminal } from "@xterm/xterm";
 import "@xterm/xterm/css/xterm.css";
@@ -14,6 +14,14 @@ import { preRegisteredActions } from "../../pregistered-actions";
 
 export default function TerminalPanel() {
   const { websocketUrl, projectHomePath } = useTerminal();
+  const [ws, setWs] = useState<string | undefined>(undefined);
+  const [loadWSPromise, setLoadWSPromise] = useState<
+    | {
+        resolve: (value: unknown) => void;
+        reject: (reason?: unknown) => void;
+      }
+    | undefined
+  >(undefined);
 
   useRegisterAction(
     preRegisteredActions["terminal-agent"],
@@ -40,71 +48,107 @@ export default function TerminalPanel() {
         response: "",
       };
     },
-    [projectHomePath, websocketUrl]
+    [projectHomePath, ws]
+  );
+
+  useRegisterAction(
+    preRegisteredActions["remote-terminal"],
+    async ({ websocketUrl }: { websocketUrl: string }) => {
+      setWs(() => websocketUrl);
+      return new Promise((resolve, reject) => {
+        setLoadWSPromise(() => ({
+          resolve,
+          reject,
+        }));
+      });
+    },
+    []
   );
 
   const { runAgentMethod } = useAgents();
-
   const { toggleLoading, isReady } = useLoading();
+
+  const [isWebsocketAvailable, setIsWebsocketAvailable] = useState(false);
 
   const terminalDivRef = useRef<HTMLDivElement>(null);
   const terminalRef = useRef<Terminal>(null);
   const fitAddonRef = useRef<FitAddon>(null);
   const websocketRef = useRef<WebSocket | null>(null);
+  const observerRef = useRef<ResizeObserver | null>(null);
 
   useEffect(() => {
-    if (isReady && websocketUrl) {
+    if (isReady) {
       toggleLoading(false);
     }
-  }, [websocketUrl, isReady]);
+  }, [isReady]);
+
+  useEffect(() => {
+    if (websocketUrl) {
+      setWs(websocketUrl);
+    }
+  }, [websocketUrl]);
 
   // Handle WebSocket connection
   useEffect(() => {
-    if (websocketUrl) {
-      const terminal = new Terminal({
-        fontFamily: "monospace",
-        scrollOnEraseInDisplay: true,
-      });
-      terminalRef.current = terminal;
+    if (ws) {
+      try {
+        const terminal = new Terminal({
+          fontFamily: "monospace",
+          scrollOnEraseInDisplay: true,
+        });
+        terminalRef.current = terminal;
 
-      // Attach WS addon
-      attachWS(terminal, websocketUrl);
+        // Attach WS addon
+        attachWS(terminal, ws);
 
-      // Fit addon
-      const fitAddon = new FitAddon();
-      terminal.loadAddon(fitAddon);
-      fitAddonRef.current = fitAddon;
+        // Fit addon
+        const fitAddon = new FitAddon();
+        terminal.loadAddon(fitAddon);
+        fitAddonRef.current = fitAddon;
 
-      // Open terminal
-      terminal.open(terminalDivRef.current as HTMLDivElement);
-      fitAddon.fit();
+        // Open terminal
+        terminal.open(terminalDivRef.current as HTMLDivElement);
+        fitAddon.fit();
 
-      // Create a ResizeObserver instance
-      const observer = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          if (entry.target === terminalDivRef.current) {
-            fitAddon.fit();
+        // Create a ResizeObserver instance
+        const observer = new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.target === terminalDivRef.current) {
+              fitAddon.fit();
+            }
           }
-        }
-      });
+        });
+        observerRef.current = observer;
 
-      if (terminalDivRef.current) {
-        observer.observe(terminalDivRef.current);
+        if (terminalDivRef.current) {
+          observer.observe(terminalDivRef.current);
+        }
+
+        if (loadWSPromise) {
+          loadWSPromise.resolve("Terminal connected");
+        }
+
+        setIsWebsocketAvailable(true);
+      } catch (error) {
+        console.error("Failed to attach WebSocket to terminal:", error);
+        if (loadWSPromise) {
+          loadWSPromise.reject(new Error("Failed to connect to WebSocket"));
+        }
       }
 
       return () => {
-        terminal.dispose();
-        observer.disconnect();
+        terminalRef.current?.dispose();
+        observerRef.current?.disconnect();
       };
     }
-  }, [websocketUrl, projectHomePath]);
+  }, [ws, projectHomePath]);
 
-  function attachWS(terminal: Terminal, websocketUrl: string) {
-    if (!websocketUrl) {
+  function attachWS(terminal: Terminal, ws: string) {
+    if (!ws) {
       throw new Error("No WebSocket URL provided.");
     }
     // Attach addon
-    const webSocket = new WebSocket(websocketUrl);
+    const webSocket = new WebSocket(ws);
     websocketRef.current = webSocket;
     webSocket.onopen = () => {
       console.log("WebSocket connection established.");
@@ -176,13 +220,27 @@ export default function TerminalPanel() {
   }
 
   return (
-    <div
-      className="h-full py-0.5 px-1 bg-black overflow-hidden"
-      id="terminal"
-      ref={terminalDivRef}
-      onClick={() => {
-        terminalRef.current?.focus();
-      }}
-    />
+    <>
+      <div
+        className="h-full py-0.5 px-1 bg-black overflow-hidden hidden data-[is-loaded=true]:block"
+        id="terminal"
+        ref={terminalDivRef}
+        onClick={() => {
+          terminalRef.current?.focus();
+        }}
+        data-is-loaded={isWebsocketAvailable}
+      />
+
+      {!isWebsocketAvailable &&
+        (ws ? (
+          <div className="bg-black h-full">
+            <p className="text-white p-4">Loading terminal </p>
+          </div>
+        ) : (
+          <div className="bg-black h-full">
+            <p className="text-white p-4">No terminal is connected.</p>
+          </div>
+        ))}
+    </>
   );
 }

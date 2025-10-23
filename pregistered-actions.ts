@@ -36,4 +36,15 @@ export const preRegisteredActions: Record<string, Action> = {
       },
     },
   },
+  "remote-terminal": {
+    name: "Open a remote terminal",
+    description: "Open a remote terminal via web socket",
+    parameters: {
+      websocketUrl: {
+        type: "string",
+        description: "The WebSocket URL to connect to the remote terminal.",
+      },
+    },
+    returns: {},
+  },
 };
