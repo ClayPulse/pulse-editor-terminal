@@ -16,9 +16,12 @@ dotenv.config({
 
 const isPreview = process.env.PREVIEW;
 const isDev = process.env.NODE_ENV;
+const workspaceId = process.env.WORKSPACE_ID;
 
 if (isDev || isPreview) {
-  const livereloadServer = livereload.createServer();
+  const livereloadServer = livereload.createServer({
+    host: "0.0.0.0",
+  });
   livereloadServer.watch("dist");
   livereloadServer.server.once("connection", () => {
     console.log("✅ LiveReload connected");
@@ -28,7 +31,17 @@ if (isDev || isPreview) {
 const app = express();
 app.use(cors());
 // Inject the client-side livereload script into HTML responses
-app.use(connectLivereload());
+app.use(
+  // The port might not be right here for the ingress.
+  // I need this route to be exposed
+  connectLivereload({
+    host: workspaceId
+      ? `${workspaceId}.workspace.pulse-editor.com"`
+      : undefined,
+    port: workspaceId ? 443 : 35729,
+  })
+);
+
 app.use(express.json());
 
 // Log each request to the console
@@ -70,17 +83,17 @@ if (isPreview) {
     }
   });
 
-  app.listen(3030);
+  app.listen(3030, "0.0.0.0");
 } else if (isDev) {
   /* Dev mode  */
   app.use(`/${pulseConfig.id}/${pulseConfig.version}`, express.static("dist"));
 
-  app.listen(3030);
+  app.listen(3030, "0.0.0.0");
 } else {
   /* Production mode */
   app.use(`/${pulseConfig.id}/${pulseConfig.version}`, express.static("dist"));
 
-  app.listen(3030, () => {
+  app.listen(3030, "0.0.0.0", () => {
     console.log(`\
 🎉 Your Pulse extension \x1b[1m${pulseConfig.displayName}\x1b[0m is LIVE! 
 
