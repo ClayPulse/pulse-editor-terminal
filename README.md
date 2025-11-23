@@ -1,5 +1,8 @@
-## Pulse Editor Terminal
-Pulse Editor Terminal is a Pulse Editor terminal extension that allows you to connect to a terminal (e.g. shell, PowerShell, Termux) on your local device.
+## Pulse App Template
+
+This is a React full-stack template which you can use to make your own Pulse Editor app. It uses Webpack Module Federation to share modules with Pulse Editor, which enables full-stack apps collaboration in a canvas workflow (see [Pulse Editor](https://github.com/claypulse/pulse-editor)).
+
+For more information about Pulse Editor core and its ecosystem, visit our [Pulse Editor GitHub](https://github.com/claypulse/pulse-editor) and [documentation](https://docs.pulse-editor.com).
 
 ## Get Started
 
