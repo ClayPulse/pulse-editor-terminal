@@ -139,26 +139,55 @@ export default function TerminalPanel() {
       return () => {
         terminalRef.current?.dispose();
         observerRef.current?.disconnect();
+        if (reconnectTimeoutRef.current)
+          clearTimeout(reconnectTimeoutRef.current);
+        websocketRef.current?.close();
       };
     }
   }, [ws, projectHomePath]);
+
+  const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const reconnectAttemptsRef = useRef(0);
+  const isReconnectionRef = useRef(false);
+
+  function scheduleReconnect(terminal: Terminal, wsUrl: string) {
+    // Exponential backoff with a cap
+    const delay = Math.min(5000, 1000 * 2 ** reconnectAttemptsRef.current);
+    console.log(`Attempting to reconnect in ${delay / 1000}s...`);
+
+    reconnectTimeoutRef.current = setTimeout(() => {
+      reconnectAttemptsRef.current += 1;
+      attachWS(terminal, wsUrl);
+    }, delay);
+  }
 
   function attachWS(terminal: Terminal, ws: string) {
     if (!ws) {
       throw new Error("No WebSocket URL provided.");
     }
+
+    // Clear previous reconnect timer
+    if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+
     // Attach addon
     const webSocket = new WebSocket(ws);
     websocketRef.current = webSocket;
     webSocket.onopen = () => {
-      console.log("WebSocket connection established.");
+      // Run only if this is opened for the first time
       // Cd to project home path and then clear the terminal
-      webSocket.send(
-        JSON.stringify({
-          type: "input",
-          payload: `cd ${projectHomePath} && clear\r`,
-        })
-      );
+      if (!isReconnectionRef.current) {
+        console.log("WebSocket connection established.");
+        webSocket.send(
+          JSON.stringify({
+            type: "input",
+            payload: `cd ${projectHomePath} && clear\r`,
+          })
+        );
+      } else {
+        console.log("WebSocket reconnected.");
+        reconnectAttemptsRef.current = 0;
+      }
+
       const { cols, rows } = terminal;
       webSocket.send(
         JSON.stringify({
@@ -176,22 +205,37 @@ export default function TerminalPanel() {
     webSocket.onerror = (error) => {
       console.error("WebSocket error: ", error);
     };
+    webSocket.onclose = (event) => {
+      console.warn("⚠️ WebSocket closed:", event.reason || event.code);
+      if (!event.wasClean) {
+        isReconnectionRef.current = true;
+        scheduleReconnect(terminal, ws);
+      } else {
+        console.log("WebSocket connection closed cleanly.");
+        isReconnectionRef.current = false;
+      }
+    };
 
     terminal.onData((data) => {
-      webSocket.send(
-        JSON.stringify({
-          type: "input",
-          payload: data,
-        })
-      );
+      if (webSocket.readyState === WebSocket.OPEN) {
+        webSocket.send(
+          JSON.stringify({
+            type: "input",
+            payload: data,
+          })
+        );
+      }
     });
+
     terminal.onResize(({ cols, rows }) => {
-      webSocket.send(
-        JSON.stringify({
-          type: "resize",
-          payload: { cols, rows },
-        })
-      );
+      if (webSocket.readyState === WebSocket.OPEN) {
+        webSocket.send(
+          JSON.stringify({
+            type: "resize",
+            payload: { cols, rows },
+          })
+        );
+      }
     });
   }
 
