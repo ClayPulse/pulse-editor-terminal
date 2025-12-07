@@ -15,9 +15,9 @@ const config: AppConfig = {
   displayName: packageJson.displayName,
   description: packageJson.description,
   appType: AppTypeEnum.FileView,
-  visibility: "public",
-  recommendedHeight: 360,
-  recommendedWidth: 640,
+  visibility: "unlisted",
+  recommendedHeight: 640,
+  recommendedWidth: 360,
   thumbnail: "assets/thumbnail.png",
   preRegisteredActions: Object.values(preRegisteredActions),
 };
