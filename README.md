@@ -1,3 +1,6 @@
+> [!WARNING]
+> This repo is deprecated. This project is moved to monorepo: https://github.com/ClayPulse/official-pulse-apps
+
 ## Pulse Editor Terminal
 Pulse Editor Terminal is a Pulse Editor terminal extension that allows you to connect to a terminal (e.g. shell, PowerShell, Termux) on your local device.
 
